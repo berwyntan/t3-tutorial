@@ -12,6 +12,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import LoadingSpinner, { LoadingPage } from "~/components/Loading";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { PageLayout } from "~/components/Layout";
 
 dayjs.extend(relativeTime);
 
@@ -93,11 +94,13 @@ const PostView = (props: PostWithUser) => {
       />
       <div className="flex flex-col">
         <div className="flex gap-1 text-slate-300">
-          <Link href={`/@${author.username}`}><span>{`@${author.username}`}</span></Link>
+          <Link href={`/@${author.username}`}>
+            <span>{`@${author.username}`}</span>
+          </Link>
           <Link href={`/post/${post.id}`}>
-          <span className="font-thin">{`· ${dayjs(
-            post.createdAt
-          ).fromNow()}`}</span>
+            <span className="font-thin">{`· ${dayjs(
+              post.createdAt
+            ).fromNow()}`}</span>
           </Link>
         </div>
         <span className="text-2xl">{post.content}</span>
@@ -133,21 +136,17 @@ const Home: NextPage = () => {
 
   return (
     <>
-      
-      <main className="flex h-screen justify-center">
-        <div className="h-full w-full border-x border-slate-400 md:max-w-2xl">
-          <div className="flex border-b border-slate-400 p-4">
-            {!isSignedIn && (
-              <div className="flex justify-center">
-                <SignInButton />
-              </div>
-            )}
-            {!!isSignedIn && <CreatePostWizard />}
+      <PageLayout>
+      <div className="flex border-b border-slate-400 p-4">
+        {!isSignedIn && (
+          <div className="flex justify-center">
+            <SignInButton />
           </div>
-
-          <Feed />
+        )}
+        {!!isSignedIn && <CreatePostWizard />}
         </div>
-      </main>
+        <Feed />
+      </PageLayout>
     </>
   );
 };
