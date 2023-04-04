@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { PageLayout } from "~/components/Layout";
-import { LoadingPage } from "~/components/Loading";
 import { PostView } from "~/components/PostView";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
@@ -19,7 +18,6 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
     <>
       <Head>
         <title>{`${data.post.content} - ${data.author.username}`}</title>
-        
       </Head>
       <PageLayout>
         <PostView {...data} />

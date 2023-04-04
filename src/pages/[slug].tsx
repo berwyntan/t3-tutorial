@@ -17,9 +17,13 @@ const ProfileFeed = (props: { userId: string }) => {
   if (isLoading) return <LoadingPage />;
   if (!data || data.length === 0) return <div>User has not posted</div>;
 
-  return <div className="flex flex-col">
-    {data.map(fullPost => (<PostView {...fullPost} key={fullPost?.post?.id} />))}
-  </div>;
+  return (
+    <div className="flex flex-col">
+      {data.map((fullPost) => (
+        <PostView {...fullPost} key={fullPost?.post?.id} />
+      ))}
+    </div>
+  );
 };
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
@@ -46,7 +50,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             className="absolute bottom-0 left-0 -mb-[64px] ml-4 rounded-full border-4 border-black bg-black"
           />
         </div>
-        <div id="qqq" className="h-[64px]"></div>
+        <div className="h-[64px]"></div>
         <div className="p-4 text-2xl font-bold">{`@${
           data.username ?? ""
         }`}</div>
@@ -56,8 +60,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     </>
   );
 };
-
-
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({
