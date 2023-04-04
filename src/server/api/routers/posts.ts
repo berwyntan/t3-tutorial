@@ -21,8 +21,6 @@ const adduserDataToPosts = async (posts: Post[]) => {
     })
   ).map(filterUserForClient);
 
-  
-
   return posts.map((post) => {
     {
       const author = users.find((user) => user.id === post.authorId);
@@ -40,7 +38,7 @@ const adduserDataToPosts = async (posts: Post[]) => {
       };
     }
   });
-}
+};
 
 // Create a new ratelimiter, that allows 3 requests per 1 minute
 const ratelimit = new Ratelimit({
@@ -56,13 +54,25 @@ const ratelimit = new Ratelimit({
 });
 
 export const postsRouter = createTRPCRouter({
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post
+        .findUnique({ where: { id: input.id }, });
+      
+        if (!post) throw new TRPCError({ code: "NOT_FOUND"});
+
+        return (await adduserDataToPosts([post]))[0];
+    
+    }),
+      
+
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
     });
     return adduserDataToPosts(posts);
-    
   }),
 
   getPostsByUserId: publicProcedure
@@ -72,13 +82,15 @@ export const postsRouter = createTRPCRouter({
       })
     )
     .query(({ ctx, input }) =>
-      ctx.prisma.post.findMany({
-        where: {
-          authorId: input.userId,
-        },
-        take: 100,
-        orderBy: [{ createdAt: "desc" }],
-      }).then(adduserDataToPosts)
+      ctx.prisma.post
+        .findMany({
+          where: {
+            authorId: input.userId,
+          },
+          take: 100,
+          orderBy: [{ createdAt: "desc" }],
+        })
+        .then(adduserDataToPosts)
     ),
 
   create: privateProcedure
